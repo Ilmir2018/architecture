@@ -26,6 +26,7 @@ class Basket
      * @var SessionInterface
      */
     private $session;
+    private $observers;
 
     /**
      * @param SessionInterface $session
@@ -33,6 +34,7 @@ class Basket
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+        $this->observers = new SplObjectStorage();
     }
 
     /**
@@ -142,5 +144,12 @@ class Basket
     private function getProductIds(): array
     {
         return $this->session->get(static::BASKET_DATA_KEY, []);
+    }
+
+    public function notify()
+    {
+        foreach ($this->observers as $observer){
+            $observer->update($this);
+        }
     }
 }
