@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Service\Order;
 
+use Framework\Registry;
 use Model;
 use Service\Billing\Card;
 use Service\Billing\IBilling;
@@ -13,9 +14,10 @@ use Service\Discount\IDiscount;
 use Service\Discount\NullObject;
 use Service\User\ISecurity;
 use Service\User\Security;
+use SplObserver;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class Basket
+class Basket implements \SplSubject
 {
     /**
      * Сессионный ключ списка всех продуктов корзины
@@ -26,7 +28,7 @@ class Basket
      * @var SessionInterface
      */
     private $session;
-    private $observers;
+    private $observers = [];
 
     /**
      * @param SessionInterface $session
@@ -34,7 +36,11 @@ class Basket
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
-        $this->observers = new SplObjectStorage();
+        // определяем наблюдателей в конфигурации
+        foreach (Registry::getDataConfig('order.listeners') as $listener){
+            $this->attach(new $listener());
+        }
+        
     }
 
     /**
@@ -145,6 +151,44 @@ class Basket
     {
         return $this->session->get(static::BASKET_DATA_KEY, []);
     }
+
+    /**
+     * Attach an SplObserver
+     * @link https://php.net/manual/en/splsubject.attach.php
+     * @param SplObserver $observer <p>
+     * The <b>SplObserver</b> to attach.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+
+    public function attach(SplObserver $observer)
+    {
+        if(!array_key_exists(get_class($observer), $this->observers)){
+            $this->observers[get_class($observer)] = $observer;
+        }
+    }
+
+    /**
+     * Detach an observer
+     * @link https://php.net/manual/en/splsubject.detach.php
+     * @param SplObserver $observer <p>
+     * The <b>SplObserver</b> to detach.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function detach(SplObserver $observer)
+    {
+        unset($this->observers[get_class($observer)]);
+    }
+
+    /**
+     * Notify an observer
+     * @link https://php.net/manual/en/splsubject.notify.php
+     * @return void
+     * @since 5.1.0
+     */
 
     public function notify()
     {

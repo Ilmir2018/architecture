@@ -6,7 +6,7 @@ namespace Service\Communication;
 
 use Model;
 
-class Email implements ICommunication
+class Email implements ICommunication, \SplObserver
 {
     /**
      * @inheritdoc
@@ -14,5 +14,9 @@ class Email implements ICommunication
     public function process(Model\Entity\User $user, string $templateName, array $params = []): void
     {
         // Вызываем метод по формированию тела письма и последующего его отправления
+    }
+
+    public function update(){
+        //логика отправки почты
     }
 }

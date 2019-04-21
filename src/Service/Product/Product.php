@@ -21,6 +21,17 @@ class Product
     }
 
     /**
+     * Получаем коллекцию продуктов
+     *
+     * @param int[] $ids
+     * @return Model\Entity\Product[]
+     */
+    public function getCollection(array $ids): array
+    {
+        return $this->getProductRepository()->search($ids);
+    }
+
+    /**
      * Получаем все продукты
      *
      * @param string $sortType
@@ -29,13 +40,19 @@ class Product
      */
     public function getAll(string $sortType): array
     {
+        switch ($sortType){
+            case 'price':
+                $strategy = new Sorter(new SorterByPrice());
+                break;
+            case 'name':
+                $strategy = new Sorter(new SortByName());
+                break;
+            default:
+                $strategy = new Sorter(new SortByName());
+        }
         $productList = $this->getProductRepository()->fetchAll();
 
-        // Применить паттерн Стратегия
-        // $sortType === 'price'; // Сортировка по цене
-        // $sortType === 'name'; // Сортировка по имени
-
-        return $productList;
+        return $strategy->sort($productList);
     }
 
     /**
