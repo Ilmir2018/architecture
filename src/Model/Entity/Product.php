@@ -68,4 +68,10 @@ class Product
             'price' => $this->price,
         ];
     }
+
+    public function __clone()
+    {
+        /*логика клонирования*/
+    }
+
 }

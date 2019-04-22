@@ -40,7 +40,7 @@ class Basket implements \SplSubject
         foreach (Registry::getDataConfig('order.listeners') as $listener){
             $this->attach(new $listener());
         }
-        
+
     }
 
     /**
