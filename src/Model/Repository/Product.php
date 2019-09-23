@@ -28,7 +28,7 @@ class Product
                 $productList[] = clone $product
                     ->setId($item['id'])
                     ->setName($item['name'])
-                    ->setPrice($item['price']);
+                    ->setPrice($item['price']); 
         }
         return $productList;
     }
