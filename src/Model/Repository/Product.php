@@ -9,7 +9,6 @@ use Model\Entity;
 class Product
 {
 
-    public  $productList = [];
     /**
      * Поиск продуктов по массиву id
      *
