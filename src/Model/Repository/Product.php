@@ -9,7 +9,6 @@ use Model\Entity;
 class Product
 {
 
-    public  $productList = [];
     /**
      * Поиск продуктов по массиву id
      *
@@ -28,7 +27,7 @@ class Product
                 $productList[] = clone $product
                     ->setId($item['id'])
                     ->setName($item['name'])
-                    ->setPrice($item['price']); 
+                    ->setPrice($item['price']);
         }
         return $productList;
     }
