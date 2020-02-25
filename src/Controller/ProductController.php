@@ -6,6 +6,7 @@ namespace Controller;
 
 use Framework\Render;
 use Service\Order\Basket;
+use Service\Order\BasketFacade;
 use Service\Product\Product;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class ProductController
      */
     public function infoAction(Request $request, $id): Response
     {
-        $basket = (new Basket($request->getSession()));
+        $basket = (new BasketFacade($request->getSession()));
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $basket->addProduct((int)$request->request->get('product'));
