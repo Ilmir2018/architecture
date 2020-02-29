@@ -17,7 +17,7 @@ use Service\User\Security;
 use SplObserver;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class Basket implements \SplSubject
+class BasketFacade
 {
     /**
      * Сессионный ключ списка всех продуктов корзины

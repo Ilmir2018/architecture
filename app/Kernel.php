@@ -39,33 +39,10 @@ class Kernel
      */
     public function handle(Request $request): Response
     {
-        $this->registerConfigs();
-        $this->registerRoutes();
+        (new \Framework\Command\RegisterConfigsCommand($this->containerBuilder))->execute();
+        (new \Framework\Command\RegisterRoutesCommand($this->containerBuilder))->execute();
 
         return $this->process($request);
-    }
-
-    /**
-     * @return void
-     */
-    protected function registerConfigs(): void
-    {
-        try {
-            $fileLocator = new FileLocator(__DIR__ . DIRECTORY_SEPARATOR . 'config');
-            $loader = new PhpFileLoader($this->containerBuilder, $fileLocator);
-            $loader->load('parameters.php');
-        } catch (\Throwable $e) {
-            die('Cannot read the config file. File: ' . __FILE__ . '. Line: ' . __LINE__);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function registerRoutes(): void
-    {
-        $this->routeCollection = require __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routing.php';
-        $this->containerBuilder->set('route_collection', $this->routeCollection);
     }
 
     /**

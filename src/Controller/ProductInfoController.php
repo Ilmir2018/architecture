@@ -6,11 +6,12 @@ namespace Controller;
 
 use Framework\Render;
 use Service\Order\Basket;
+use Service\Order\BasketFacade;
 use Service\Product\Product;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController
+class ProductInfoController
 {
     use Render;
 
@@ -23,7 +24,7 @@ class ProductController
      */
     public function infoAction(Request $request, $id): Response
     {
-        $basket = (new Basket($request->getSession()));
+        $basket = (new BasketFacade($request->getSession()));
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $basket->addProduct((int)$request->request->get('product'));
@@ -40,17 +41,5 @@ class ProductController
         return $this->render('product/info.html.php', ['productInfo' => $productInfo, 'isInBasket' => $isInBasket]);
     }
 
-    /**
-     * Список всех продуктов
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function listAction(Request $request): Response
-    {
-        $productList = (new Product())->getAll($request->query->get('sort', ''));
 
-        return $this->render('product/list.html.php', ['productList' => $productList]);
-    }
 }
